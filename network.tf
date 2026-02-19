@@ -81,7 +81,16 @@ resource "aws_subnet" "public3" {
   }
 }
 #create EIP
-resource "aws_eip" "utc-eip" {
+resource "aws_eip" "utc_eip_1" {
+  domain = "vpc"
+}
+
+resource "aws_eip" "utc_eip_2" {
+  domain = "vpc"
+}
+
+resource "aws_eip" "utc_eip_3" {
+  domain = "vpc"
 }
 #create NAT gateway
 resource "aws_nat_gateway" "NAT1" {

@@ -86,15 +86,22 @@ resource "aws_eip" "utc-eip" {
 #create NAT gateway
 resource "aws_nat_gateway" "NAT1" {
   allocation_id = aws_eip.utc-eip.id
-  subnet_id     = aws_subnet.private1.id
-  depends_on = [aws_internet_gateway.example]
+  subnet_id     = aws_subnet.public1.id
+  # depends_on = [aws_internet_gateway.example]
 }
 #create NAT gateway
 resource "aws_nat_gateway" "NAT2" {
   allocation_id = aws_eip.utc-eip.id
-  subnet_id     = aws_subnet.private2.id
-  depends_on = [aws_internet_gateway.example]
+  subnet_id     = aws_subnet.public2.id
+  # depends_on = [aws_internet_gateway.example]
 }
+#create NAT gateway
+resource "aws_nat_gateway" "NAT3" {
+  allocation_id = aws_eip.utc-eip.id
+  subnet_id     = aws_subnet.public3.id
+  # depends_on = [aws_internet_gateway.example]
+}
+
  #create iGW
 resource "aws_internet_gateway" "utc-igw" {
   vpc_id = aws_vpc.utc_vpc.id
@@ -113,6 +120,14 @@ resource "aws_route_table" "private_1" {
   route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.NAT1.id
+  }
+}
+
+resource "aws_route_table" "private_3" {
+  vpc_id = aws_vpc.utc_vpc.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.NAT3.id
   }
 }
 resource "aws_route_table" "private_2" {
@@ -141,21 +156,21 @@ resource "aws_route_table_association" "private_1" {
 }
 resource "aws_route_table_association" "private_2" {
   subnet_id      = aws_subnet.private2.id
-  route_table_id = aws_route_table.private_1.id
+  route_table_id = aws_route_table.private_2.id
 }
 resource "aws_route_table_association" "private_3" {
   subnet_id      = aws_subnet.private3.id
-  route_table_id = aws_route_table.private_1.id
+  route_table_id = aws_route_table.private_2.id
 }
 resource "aws_route_table_association" "private_4" {
   subnet_id      = aws_subnet.private4.id
-  route_table_id = aws_route_table.private_2.id
+  route_table_id = aws_route_table.private_3.id
 }
 resource "aws_route_table_association" "private_5" {
   subnet_id      = aws_subnet.private5.id
-  route_table_id = aws_route_table.private_2.id
+  route_table_id = aws_route_table.private_3.id
 }
 resource "aws_route_table_association" "private_6" {
   subnet_id      = aws_subnet.private6.id
-  route_table_id = aws_route_table.private_2.id
+  route_table_id = aws_route_table.private_1.id
 }
